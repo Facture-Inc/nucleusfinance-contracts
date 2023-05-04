@@ -1,0 +1,48 @@
+DEPLOYMENT
+
+npx hardhat run scripts/Xdeploy.js --network fuji
+npx hardhat run scripts/Ydeploy.js --network ftm_testnet
+change contract addresses in DeploymentTest.js
+
+DEPLOYMENT TESTS
+
+npx hardhat test test/DeploymentTest.js --network fuji --grep "X Deployment Contracts"
+npx hardhat test test/DeploymentTest.js --network ftm_testnet --grep "Y Deployment Contracts"
+
+INITIAL SETUP TESTS
+
+npx hardhat test test/test.js --network fuji --grep "Initial X Contracts"
+{
+    [USER,DEPLOYER] give allowance to XChainTest (10000)
+    trust Y address
+}
+
+npx hardhat test test/test.js --network ftm_testnet --grep "Initial Y Contracts"
+{
+    Transfers 5000 YTestToken to YChainTest
+    [DEPLOYER,YChainTest] give allowance to YTestVault (10000)
+    trust X address
+}
+
+DEV SETUP TESTS
+
+{
+    npx hardhat test test/test.js --network ftm_testnet --grep "YTestVault PreviewRedeem"
+}
+
+npx hardhat test test/test.js --network fuji --grep "XTestToken balance of"
+npx hardhat test test/test.js --network fuji --grep "XTestToken transfer to user"
+npx hardhat test test/test.js --network fuji --grep "XTestToken transfer to XTestChain"
+npx hardhat test test/test.js --network fuji --grep "XChainTest Deposit as deployer"
+npx hardhat test test/test.js --network fuji --grep "XChainTest Deposit as user"
+npx hardhat test test/test.js --network fuji --grep "XChainTest balance of"
+npx hardhat test test/test.js --network fuji --grep "XChainTest data"
+npx hardhat test test/test.js --network fuji --grep "XChainTest invest"
+npx hardhat test test/test.js --network ftm_testnet --grep "YChainTest TotalVaultAssets"
+npx hardhat test test/test.js --network ftm_testnet --grep "YTestVault add rewards"
+npx hardhat test test/test.js --network ftm_testnet --grep "YChainTest send totalVaultAssets"
+npx hardhat test test/test.js --network fuji --grep "XChainTest TotalVaultAssets"
+npx hardhat test test/test.js --network fuji --grep "XChainTest Withdraw as deployer"
+npx hardhat test test/test.js --network fuji --grep "XChainTest Withdraw as user"
+npx hardhat test test/test.js --network fuji --grep "XChainTest redeem tokens as deployer"
+npx hardhat test test/test.js --network fuji --grep "XChainTest redeem tokens as user"
