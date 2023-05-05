@@ -83,6 +83,8 @@ contract XChain is
     error insufficientRedeemAmount();
     error invalidPercentage();
     error invalidAccessControl(address _add);
+    error ZeroShares();
+    error ZeroAssets();
 
     /*//////////////////////////////////////////////////////////////
                                 MODIFIERS
@@ -157,7 +159,8 @@ contract XChain is
         uint256 assets
     ) external virtual whenNotPaused nonReentrant returns (uint256 shares) {
         if (asset.balanceOf(msg.sender) < assets) revert insufficientAssets();
-        require((shares = previewDeposit(assets)) != 0, "ZERO_SHARES");
+shares = previewDeposit(assets);
+        if(shares <= 0) revert ZeroShares();
         supplytoAdd += shares;
         data[0] += assets;
         asset.transferFrom(msg.sender, address(this), assets);
@@ -169,7 +172,8 @@ contract XChain is
         uint256 shares
     ) external virtual whenNotPaused nonReentrant returns (uint256 assets) {
         if (balanceOf[msg.sender] < shares) revert insufficientShares();
-        require((assets = previewRedeem(shares)) != 0, "ZERO_ASSETS");
+        assets = previewRedeem(shares);
+        if(assets <= 0) revert ZeroAssets();
         withdrawalRequests[msg.sender] += assets;
         supplytoDeduct += shares;
         data[1] += assets;
