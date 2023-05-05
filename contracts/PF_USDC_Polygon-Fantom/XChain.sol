@@ -45,10 +45,10 @@ contract XChain is
     ERC20 public immutable asset;
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
     uint16 internal immutable destChainId = 112;
+    uint16 public feePercentage;
     uint256[2] public data;
     uint256 public actSupply;
     uint256 public totalVaultAssets;
-    uint16 public feePercentage;
     uint256 internal supplytoAdd;
     uint256 internal supplytoDeduct;
     address internal immutable _lzEndpoint =
@@ -159,8 +159,8 @@ contract XChain is
         uint256 assets
     ) external virtual whenNotPaused nonReentrant returns (uint256 shares) {
         if (asset.balanceOf(msg.sender) < assets) revert insufficientAssets();
-shares = previewDeposit(assets);
-        if(shares <= 0) revert ZeroShares();
+        shares = previewDeposit(assets);
+        if (shares <= 0) revert ZeroShares();
         supplytoAdd += shares;
         data[0] += assets;
         asset.transferFrom(msg.sender, address(this), assets);
@@ -173,7 +173,7 @@ shares = previewDeposit(assets);
     ) external virtual whenNotPaused nonReentrant returns (uint256 assets) {
         if (balanceOf[msg.sender] < shares) revert insufficientShares();
         assets = previewRedeem(shares);
-        if(assets <= 0) revert ZeroAssets();
+        if (assets <= 0) revert ZeroAssets();
         withdrawalRequests[msg.sender] += assets;
         supplytoDeduct += shares;
         data[1] += assets;
@@ -184,7 +184,8 @@ shares = previewDeposit(assets);
     function redeem(
         uint256 amount
     ) external virtual nonReentrant whenNotPaused {
-        if(withdrawalRequests[msg.sender] < amount) revert insufficientRedeemAmount();
+        if (withdrawalRequests[msg.sender] < amount)
+            revert insufficientRedeemAmount();
         uint256 feeAmount = calculateVaultFees(amount);
         withdrawalRequests[msg.sender] -= amount;
         if (feeAmount != 0) {
