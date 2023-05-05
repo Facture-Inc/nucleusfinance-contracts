@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: None
-// CF_USDT_Polygon-BNB
+// CF_USDT_Polygon-BSC
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -38,7 +38,7 @@ interface USDC {
 }
 
 /**
- * @dev         Pain Finance USDC Crypt [Polygon to Fantom]
+ * @dev         Cream Finance USDT [Polygon to BSC]
  * @custom:todo add proper natspec comments for all functions
  */
 contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {

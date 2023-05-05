@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: None
-// CF_USDT_Polygon-BNB
+// CF_USDT_Polygon-BSC
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -13,9 +13,8 @@ import {FixedPointMathLib} from "../imports//FixedPointMathLib.sol";
 import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
 
 /**
- * @dev         Pain Finance USDC Crypt [Polygon to Fantom]
+ * @dev         Cream Finance USDT [Polygon to BSC]
  * @custom:todo add proper natspec comments for all functions
- * @custom:todo change MAINTAINER_ROLE before dep
  */
 contract XChain is
     SERC20,
