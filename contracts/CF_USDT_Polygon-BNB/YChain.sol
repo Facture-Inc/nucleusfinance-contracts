@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: None
-// PF_USDC_Polygon-Fantom
+// CF_USDT_Polygon-BNB
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
