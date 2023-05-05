@@ -12,23 +12,14 @@ import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
                             INTERFACES
 //////////////////////////////////////////////////////////////*/
 
-interface PainUSDCCrypt {
-    function deposit(
-        uint256 assets,
-        address receiver
-    ) external returns (uint256 shares);
-
-    function previewRedeem(uint256 shares) external view returns (uint256);
+interface CreamUSDT {
+    function mint(uint mintAmount) external view returns (uint);
 
     function balanceOf(address account) external view returns (uint256);
 
-    function maxRedeem(address owner) external returns (uint256);
+    function previewRedeem(uint256 shares) external view returns (uint256);
 
-    function withdraw(
-        uint256 assets,
-        address receiver,
-        address owner
-    ) external returns (uint256);
+    function redeem(uint redeemTokens) external view returns (uint);
 }
 
 interface USDC {
@@ -40,6 +31,7 @@ interface USDC {
 /**
  * @dev         Cream Finance USDT [Polygon to BSC]
  * @custom:todo add proper natspec comments for all functions
+ * @custom:todo figure out previewRedeem()
  */
 contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     /*//////////////////////////////////////////////////////////////
@@ -53,7 +45,7 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
                                 INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
-    PainUSDCCrypt public immutable painUsdcCrypt;
+    CreamUSDT public immutable creamUsdt;
     USDC public immutable asset;
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
     uint16 internal immutable destChainId = 109;
@@ -72,7 +64,7 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         address _maintainer
     ) NonblockingLzApp(_lzEndpoint) {
         asset = USDC(_asset);
-        painUsdcCrypt = PainUSDCCrypt(_vault);
+        creamUsdt = CreamUSDT(_vault);
         vault = _vault;
         maintainer = _maintainer;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -138,21 +130,20 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
             revert insufficientAssets();
         uint256 amount = data[0];
         data[0] = 0;
-        painUsdcCrypt.deposit(amount, address(this));
+        creamUsdt.mint(amount);
         emit Invested(amount);
     }
 
     function withdrawfromVault() internal nonReentrant whenNotPaused {
-        if (previewRedeemOfContract() < data[1]) revert insufficientShares();
         uint256 amount = data[1];
         data[1] = 0;
-        painUsdcCrypt.withdraw(amount, address(this), address(this));
+        creamUsdt.redeem(amount);
         emit Withdrawn(amount);
     }
 
     function previewRedeemOfContract() internal view virtual returns (uint256) {
-        uint256 balance = painUsdcCrypt.balanceOf(address(this));
-        return painUsdcCrypt.previewRedeem(balance);
+        uint256 balance = creamUsdt.balanceOf(address(this));
+        return creamUsdt.previewRedeem(balance);
     }
 
     function assetAllowance() external onlyAdmin {
