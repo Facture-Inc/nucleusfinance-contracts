@@ -44,7 +44,7 @@ contract XChain is
 
     ERC20 public immutable asset;
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
-    uint16 internal immutable destChainId = 112;
+    uint16 internal immutable destChainId = 102;
     uint16 public feePercentage;
     uint256[2] public data;
     uint256 public actSupply;

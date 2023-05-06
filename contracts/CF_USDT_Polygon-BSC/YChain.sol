@@ -52,7 +52,7 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     uint256[2] public data;
     uint256 public totalVaultAssets;
     address internal immutable _lzEndpoint =
-        0xb6319cC6c8c27A8F5dAF0dD3DF91EA35C4720dd7;
+        0x3c2269811836af69497E5F486A85D7316753cf62;
     address internal immutable swapAdd =
         0x25aB3Efd52e6470681CE037cD546Dc60726948D3;
     address internal maintainer;
