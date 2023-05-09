@@ -143,7 +143,7 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
 
     function previewRedeemOfContract() internal view virtual returns (uint256) {
         uint256 balance = venusUsdt.balanceOf(address(this));
-        return venusUsdt.exchangeRateStored() * balance;
+        return (venusUsdt.exchangeRateStored() / 10 ** 28) * balance;
     }
 
     function assetAllowance() external onlyAdmin {
@@ -176,7 +176,7 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
 
     function send() external payable onlyMaintainer {
         totalVaultAssets = previewRedeemOfContract();
-        bytes memory payload = abi.encode(totalVaultAssets);
+        bytes memory payload = abi.encode(totalVaultAssets / 10 ** 12);
         _lzSend(
             destChainId,
             payload,

@@ -263,10 +263,10 @@ contract XChain is
 
     function send() external payable nonReentrant onlyMaintainer {
         if (data[0] > data[1]) {
-            data[0] -= data[1];
+            data[0] = (data[0] - data[1]) * 10 ** 12;
             data[1] = 0;
         } else if (data[1] > data[0]) {
-            data[1] -= data[0];
+            data[1] = (data[1] - data[0]) * 10 ** 12;
             data[0] = 0;
         } else {
             revert("No need to invest");
