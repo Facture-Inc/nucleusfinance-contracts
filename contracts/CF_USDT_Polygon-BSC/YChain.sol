@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: None
-// CF_USDT_Polygon-BSC
+// VP_USDT_Polygon-BSC
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -12,24 +12,24 @@ import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
                             INTERFACES
 //////////////////////////////////////////////////////////////*/
 
-interface CreamUSDT {
-    function mint(uint mintAmount) external view returns (uint);
+interface VenusUSDT {
+    function mint(uint mintAmount) external returns (uint);
 
-    function balanceOf(address account) external view returns (uint256);
+    function balanceOf(address owner) external view returns (uint);
 
-    function previewRedeem(uint256 shares) external view returns (uint256);
+    function exchangeRateStored() external view returns (uint);
 
-    function redeem(uint redeemTokens) external view returns (uint);
+    function redeem(uint redeemTokens) external returns (uint);
 }
 
-interface USDC {
+interface USDT {
     function approve(address spender, uint256 value) external returns (bool);
 
     function balanceOf(address account) external view returns (uint256);
 }
 
 /**
- * @dev         Cream Finance USDT [Polygon to BSC]
+ * @dev         Venus Protocol USDT [Polygon to BSC]
  * @custom:todo add proper natspec comments for all functions
  * @custom:todo figure out previewRedeem()
  */
@@ -45,8 +45,8 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
                                 INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
-    CreamUSDT public immutable creamUsdt;
-    USDC public immutable asset;
+    VenusUSDT public immutable venusUsdt;
+    USDT public immutable asset;
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
     uint16 internal immutable destChainId = 109;
     uint256[2] public data;
@@ -63,8 +63,8 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         address _vault,
         address _maintainer
     ) NonblockingLzApp(_lzEndpoint) {
-        asset = USDC(_asset);
-        creamUsdt = CreamUSDT(_vault);
+        asset = USDT(_asset);
+        venusUsdt = VenusUSDT(_vault);
         vault = _vault;
         maintainer = _maintainer;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -130,20 +130,20 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
             revert insufficientAssets();
         uint256 amount = data[0];
         data[0] = 0;
-        creamUsdt.mint(amount);
+        venusUsdt.mint(amount);
         emit Invested(amount);
     }
 
     function withdrawfromVault() internal nonReentrant whenNotPaused {
         uint256 amount = data[1];
         data[1] = 0;
-        creamUsdt.redeem(amount);
+        venusUsdt.redeem(amount);
         emit Withdrawn(amount);
     }
 
     function previewRedeemOfContract() internal view virtual returns (uint256) {
-        uint256 balance = creamUsdt.balanceOf(address(this));
-        return creamUsdt.previewRedeem(balance);
+        uint256 balance = venusUsdt.balanceOf(address(this));
+        return venusUsdt.exchangeRateStored() * balance;
     }
 
     function assetAllowance() external onlyAdmin {

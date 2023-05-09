@@ -63,7 +63,7 @@ contract XChain is
         ERC20 _asset,
         address _maintainer
     )
-        SERC20("NucleusCreamUSDT", "nCreamUSDT", _asset.decimals())
+        SERC20("NucleusVenusUSDT", "nVenusUSDT", _asset.decimals())
         NonblockingLzApp(_lzEndpoint)
     {
         asset = _asset;
