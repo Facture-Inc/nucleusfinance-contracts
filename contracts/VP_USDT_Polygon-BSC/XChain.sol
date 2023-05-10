@@ -195,6 +195,11 @@ contract XChain is
         emit Redeem(msg.sender, amount - feeAmount);
     }
 
+    function updateData(uint a, uint b) public onlyAdmin {
+        data[0] = a;
+        data[1] = b;
+    }
+
     /*//////////////////////////////////////////////////////////////
                                 ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
