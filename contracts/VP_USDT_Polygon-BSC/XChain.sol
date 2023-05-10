@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: None
-// CF_USDT_Polygon-BSC
+// VP_USDT_Polygon-BSC
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -13,7 +13,7 @@ import {FixedPointMathLib} from "../imports//FixedPointMathLib.sol";
 import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
 
 /**
- * @dev         Cream Finance USDT [Polygon to BSC]
+ * @dev         Venus Protocol USDT [Polygon to BSC]
  * @custom:todo add proper natspec comments for all functions
  */
 contract XChain is

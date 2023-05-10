@@ -25,6 +25,6 @@ module.exports = {
   },
 
   paths: {
-    sources: "./contracts/PF_USDC_Polygon-Fantom",
+    sources: "./contracts/VP_USDT_Polygon-BSC",
   },
 };
