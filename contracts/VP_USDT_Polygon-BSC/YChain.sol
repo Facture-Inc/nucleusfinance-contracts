@@ -125,7 +125,7 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
                         DEPOSIT/WITHDRAWAL LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function invest() internal nonReentrant whenNotPaused {
+    function invest() public onlyMaintainer nonReentrant whenNotPaused {
         if (asset.balanceOf(address(this)) < data[0])
             revert insufficientAssets();
         uint256 amount = data[0];
@@ -134,7 +134,12 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         emit Invested(amount);
     }
 
-    function withdrawfromVault() internal nonReentrant whenNotPaused {
+    function withdrawfromVault()
+        public
+        onlyMaintainer
+        nonReentrant
+        whenNotPaused
+    {
         uint256 amount = data[1];
         data[1] = 0;
         venusUsdt.redeem(amount);
@@ -194,8 +199,6 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         bytes memory _payload
     ) internal override {
         data = abi.decode(_payload, (uint256[2]));
-        if (data[0] != 0) invest();
-        else withdrawfromVault();
     }
 
     /*//////////////////////////////////////////////////////////////
