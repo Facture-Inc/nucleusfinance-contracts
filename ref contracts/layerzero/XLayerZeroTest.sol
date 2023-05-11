@@ -6,10 +6,11 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract XLayerZeroTest is NonblockingLzApp, AccessControl {
     uint256[2] public data;
+    uint256 public totalVaultAssets;
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
     bytes public PAYLOAD;
-    uint16 internal immutable destChainId = 10112;
-    address _lzEndpoint = 0xf69186dfBa60DdB133E91E9A4B5673624293d8F8;
+    uint16 internal immutable destChainId = 10102;
+    address _lzEndpoint = 0x93f54D755A063cE7bB9e6Ac47Eccc8e33411d706;
 
     constructor() NonblockingLzApp(_lzEndpoint) {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -66,6 +67,15 @@ contract XLayerZeroTest is NonblockingLzApp, AccessControl {
     }
 
     function send() public payable {
+        if (data[0] > data[1]) {
+            data[0] = (data[0] - data[1]) * 10 ** 12;
+            data[1] = 0;
+        } else if (data[1] > data[0]) {
+            data[1] = (data[1] - data[0]) * 10 ** 12;
+            data[0] = 0;
+        } else {
+            revert("No need to invest");
+        }
         bytes memory payload = abi.encode(data);
         _lzSend(
             destChainId,
@@ -83,6 +93,6 @@ contract XLayerZeroTest is NonblockingLzApp, AccessControl {
         uint64,
         bytes memory _payload
     ) internal override {
-        data = abi.decode(_payload, (uint256[2]));
+        totalVaultAssets = abi.decode(_payload, (uint256));
     }
 }

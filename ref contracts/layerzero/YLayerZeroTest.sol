@@ -5,9 +5,10 @@ import "https://github.com/LayerZero-Labs/solidity-examples/blob/main/contracts/
 
 contract YLayerZeroTest is NonblockingLzApp {
     uint256[2] public data;
+    uint256 public totalVaultAssets;
     bytes public PAYLOAD;
-    uint16 internal immutable destChainId = 10109;
-    address _lzEndpoint = 0x7dcAD72640F835B0FA36EFD3D6d3ec902C7E5acf;
+    uint16 internal immutable destChainId = 10106;
+    address _lzEndpoint = 0x6Fcb97553D41516Cb228ac03FdC8B9a0a9df04A1;
 
     constructor() NonblockingLzApp(_lzEndpoint) {}
 
@@ -23,11 +24,15 @@ contract YLayerZeroTest is NonblockingLzApp {
         data[1] = _num2;
     }
 
+    function updateTotalVaultAssets(uint _val) public {
+        totalVaultAssets = _val;
+    }
+
     function updatePayload() public {
         PAYLOAD = abi.encode(data);
     }
 
-    function estimateFee() public view returns (uint256 nativeFee) {
+    function estimateFee() external view returns (uint256 nativeFee) {
         bytes memory payload = abi.encode(data);
         (nativeFee, ) = lzEndpoint.estimateFees(
             destChainId,
@@ -40,7 +45,7 @@ contract YLayerZeroTest is NonblockingLzApp {
     }
 
     function send() public payable {
-        bytes memory payload = abi.encode(data);
+        bytes memory payload = abi.encode(totalVaultAssets / 10 ** 12);
         _lzSend(
             destChainId,
             payload,
