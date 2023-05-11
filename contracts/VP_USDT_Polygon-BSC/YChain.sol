@@ -19,7 +19,7 @@ interface VenusUSDT {
 
     function exchangeRateStored() external view returns (uint);
 
-    function redeem(uint redeemTokens) external returns (uint);
+    function redeemUnderlying(uint redeemAmount) external returns (uint);
 }
 
 interface USDT {
@@ -142,13 +142,13 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     {
         uint256 amount = data[1];
         data[1] = 0;
-        venusUsdt.redeem(amount);
+        venusUsdt.redeemUnderlying(amount);
         emit Withdrawn(amount);
     }
 
     function previewRedeemOfContract() internal view virtual returns (uint256) {
         uint256 balance = venusUsdt.balanceOf(address(this));
-        return (venusUsdt.exchangeRateStored() * balance) / 10 ** 30;
+        return ((venusUsdt.exchangeRateStored() * balance) / 10 ** 30);
     }
 
     function assetAllowance() external onlyAdmin {
