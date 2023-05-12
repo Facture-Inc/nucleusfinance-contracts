@@ -31,7 +31,6 @@ interface USDT {
 /**
  * @dev         Venus Protocol USDT [Polygon to BSC]
  * @custom:todo add proper natspec comments for all functions
- * @custom:todo figure out previewRedeem()
  */
 contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     /*//////////////////////////////////////////////////////////////
@@ -146,7 +145,7 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         emit Withdrawn(amount);
     }
 
-    function previewRedeemOfContract() internal view virtual returns (uint256) {
+    function previewRedeemOfContract() public view returns (uint256) {
         uint256 balance = venusUsdt.balanceOf(address(this));
         return ((venusUsdt.exchangeRateStored() * balance) / 10 ** 30);
     }
