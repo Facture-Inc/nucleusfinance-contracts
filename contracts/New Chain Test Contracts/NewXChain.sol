@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: None
-// PF_USDC_Polygon-Fantom
+// NewXChain
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -13,8 +13,10 @@ import {FixedPointMathLib} from "../imports//FixedPointMathLib.sol";
 import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
 
 /**
- * @dev         Pain Finance USDC Crypt [Polygon to Fantom]
- * @custom:todo add proper natspec comments for all functions
+ * @dev         NewXChain
+ * @custom:todo update lz endpoint, destChainId & meson contract add
+ * @custom:todo update token name constructor
+ * @custom:todo update check decimals
  */
 contract NewXChain is
     SERC20,
