@@ -16,7 +16,7 @@ import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
  * @dev         Pain Finance USDC Crypt [Polygon to Fantom]
  * @custom:todo add proper natspec comments for all functions
  */
-contract XChain is
+contract NewXChain is
     SERC20,
     NonblockingLzApp,
     AccessControl,
