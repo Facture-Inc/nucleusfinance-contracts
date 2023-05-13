@@ -12,7 +12,7 @@ import {FixedPointMathLib} from "../imports//FixedPointMathLib.sol";
 import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
 
 /**
- * @dev         Vector Finance USDC/Money on Platypus [Polygon to Avalanche]
+ * @dev Vector Finance USDC/Money on Platypus [Polygon to Avalanche]
  */
 contract XChain is
     SERC20,
@@ -49,8 +49,6 @@ contract XChain is
     uint256 public totalVaultAssets;
     uint256 internal supplytoAdd;
     uint256 internal supplytoDeduct;
-    address internal immutable _lzEndpoint =
-        0x3c2269811836af69497E5F486A85D7316753cf62;
     address internal immutable swapAdd =
         0x25aB3Efd52e6470681CE037cD546Dc60726948D3;
     address internal devWallet;
@@ -61,8 +59,8 @@ contract XChain is
         ERC20 _asset,
         address _maintainer
     )
-        SERC20("NucleusPainUSDC", "nPainUSDC", _asset.decimals())
-        NonblockingLzApp(_lzEndpoint)
+        SERC20("NucleusVectorUSDC/MONEY", "nVectorUSDC/MONEY", _asset.decimals())
+        NonblockingLzApp(0x3c2269811836af69497E5F486A85D7316753cf62)
     {
         asset = _asset;
         devWallet = msg.sender;

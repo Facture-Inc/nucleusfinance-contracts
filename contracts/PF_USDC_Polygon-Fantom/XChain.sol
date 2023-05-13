@@ -170,7 +170,7 @@ contract XChain is
 
     function requestWithdrawal(
         uint256 shares
-    ) external virtual whenNotPaused nonReentrant returns (uint256 assets) {
+    ) external virtual nonReentrant returns (uint256 assets) {
         if (balanceOf[msg.sender] < shares) revert insufficientShares();
         assets = previewRedeem(shares);
         if (assets <= 0) revert ZeroAssets();
@@ -183,7 +183,7 @@ contract XChain is
 
     function redeem(
         uint256 amount
-    ) external virtual nonReentrant whenNotPaused {
+    ) external virtual nonReentrant {
         if (withdrawalRequests[msg.sender] < amount)
             revert insufficientRedeemAmount();
         uint256 feeAmount = calculateVaultFees(amount);
