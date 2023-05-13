@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: None
-// PF_USDC_Polygon-Fantom
+// NewYChain
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -38,8 +38,10 @@ interface USDC {
 }
 
 /**
- * @dev         Pain Finance USDC Crypt [Polygon to Fantom]
- * @custom:todo add proper natspec comments for all functions
+ * @dev         NewYChain
+ * @custom:todo update interfaces and their state vars
+ * @custom:todo update lz endpoint, destChainId & meson contract add
+ * @custom:todo fig out previewRedeemOfContract()
  */
 contract NewYChain is
     NonblockingLzApp,
@@ -163,6 +165,11 @@ contract NewYChain is
     function assetAllowance() external onlyAdmin {
         asset.approve(swapAdd, 2 ** 256 - 1);
         asset.approve(vault, 2 ** 256 - 1);
+    }
+
+    function updateData(uint a, uint b) public onlyAdmin {
+        data[0] = a;
+        data[1] = b;
     }
 
     /*//////////////////////////////////////////////////////////////
