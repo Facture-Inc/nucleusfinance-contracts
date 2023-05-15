@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: None
-// PF_USDC_Polygon-Fantom
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -12,7 +11,8 @@ import {FixedPointMathLib} from "../imports//FixedPointMathLib.sol";
 import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
 
 /**
- * @dev Vector Finance USDC/Money on Platypus [Polygon to Avalanche]
+ * @dev         Pain Finance USDC Crypt [Avalanche to Fantom]
+ * @custom:todo add proper natspec comments for all functions
  */
 contract XChain is
     SERC20,
@@ -40,9 +40,10 @@ contract XChain is
                                 INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
-    ERC20 public immutable asset;
+    ERC20 public immutable asset =
+        ERC20(0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E); //usdc on avalanche
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
-    uint16 internal immutable destChainId = 106;
+    uint16 internal immutable destChainId = 112;
     uint16 public feePercentage;
     uint256[2] public data;
     uint256 public actSupply;
@@ -50,23 +51,24 @@ contract XChain is
     uint256 internal supplytoAdd;
     uint256 internal supplytoDeduct;
     address internal immutable swapAdd =
-        0x25aB3Efd52e6470681CE037cD546Dc60726948D3;
+        0x25aB3Efd52e6470681CE037cD546Dc60726948D3; //meson contract
     address internal devWallet;
     address internal maintainer;
     mapping(address => uint256) public withdrawalRequests;
 
-    constructor(
-        ERC20 _asset,
-        address _maintainer
-    )
-        SERC20("NucleusVectorUSDC/MONEY", "nVectorUSDC/MONEY", _asset.decimals())
-        NonblockingLzApp(0x3c2269811836af69497E5F486A85D7316753cf62)
+    //check if endpoint is correct
+    constructor()
+        SERC20(
+            "NucleusPainUSDC-Avalanche/Fantom",
+            "nPainUSDC-AVAX/FTM",
+            asset.decimals()
+        )
+        NonblockingLzApp(0xb6319cC6c8c27A8F5dAF0dD3DF91EA35C4720dd7)
     {
-        asset = _asset;
         devWallet = msg.sender;
-        maintainer = _maintainer;
+        maintainer = msg.sender;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(MAINTAINER_ROLE, _maintainer);
+        _setupRole(MAINTAINER_ROLE, msg.sender);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -166,7 +168,7 @@ contract XChain is
 
     function requestWithdrawal(
         uint256 shares
-    ) external virtual whenNotPaused nonReentrant returns (uint256 assets) {
+    ) external virtual nonReentrant returns (uint256 assets) {
         if (balanceOf[msg.sender] < shares) revert insufficientShares();
         assets = previewRedeem(shares);
         if (assets <= 0) revert ZeroAssets();
@@ -177,9 +179,7 @@ contract XChain is
         emit WithdrawalRequested(msg.sender, shares, assets);
     }
 
-    function redeem(
-        uint256 amount
-    ) external virtual nonReentrant whenNotPaused {
+    function redeem(uint256 amount) external virtual nonReentrant {
         if (withdrawalRequests[msg.sender] < amount)
             revert insufficientRedeemAmount();
         uint256 feeAmount = calculateVaultFees(amount);

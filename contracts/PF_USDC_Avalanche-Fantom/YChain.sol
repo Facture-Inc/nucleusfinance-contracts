@@ -12,8 +12,11 @@ import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
                             INTERFACES
 //////////////////////////////////////////////////////////////*/
 
-interface VenusUSDCxMONEYPool {
-    function deposit(uint256 amount) external;
+interface PainUSDCCrypt {
+    function deposit(
+        uint256 assets,
+        address receiver
+    ) external returns (uint256 shares);
 
     function previewRedeem(uint256 shares) external view returns (uint256);
 
@@ -21,7 +24,11 @@ interface VenusUSDCxMONEYPool {
 
     function maxRedeem(address owner) external returns (uint256);
 
-    function withdraw(uint256 amount, uint256 minAmount) external;
+    function withdraw(
+        uint256 assets,
+        address receiver,
+        address owner
+    ) external returns (uint256);
 }
 
 interface USDC {
@@ -31,7 +38,8 @@ interface USDC {
 }
 
 /**
- * @dev Vector Finance USDC/Money on Platypus [Polygon to Avalanche]
+ * @dev         Pain Finance USDC Crypt [Avalanche to Fantom]
+ * @custom:todo add proper natspec comments for all functions
  */
 contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     /*//////////////////////////////////////////////////////////////
@@ -45,25 +53,23 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
                                 INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
+    PainUSDCCrypt public immutable painUsdcCrypt =
+        PainUSDCCrypt(0xd55C59Da5872DE866e39b1e3Af2065330ea8Acd6);
+    USDC public immutable asset =
+        USDC(0x04068DA6C83AFCFA0e13ba15A6696662335D5B75);
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
-    uint16 internal immutable destChainId = 109;
+    uint16 internal immutable destChainId = 106;
     uint256[2] public data;
     uint256 public totalVaultAssets;
     address internal immutable swapAdd =
         0x25aB3Efd52e6470681CE037cD546Dc60726948D3;
     address internal maintainer;
-    address internal vault = 0x53ccA4921522e43EF6652420c3eEC6FBfE987a55;
-    VenusUSDCxMONEYPool public immutable venusUSDCxMONEYPool =
-        VenusUSDCxMONEYPool(vault);
-    USDC public immutable asset =
-        USDC(0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E);
+    address internal vault;
 
-    constructor(
-        address _maintainer
-    ) NonblockingLzApp(0x3c2269811836af69497E5F486A85D7316753cf62) {
-        maintainer = _maintainer;
+    constructor() NonblockingLzApp(0x3c2269811836af69497E5F486A85D7316753cf62) {
+        maintainer = msg.sender;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(MAINTAINER_ROLE, _maintainer);
+        _setupRole(MAINTAINER_ROLE, msg.sender);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -125,22 +131,21 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
             revert insufficientAssets();
         uint256 amount = data[0];
         data[0] = 0;
-        venusUSDCxMONEYPool.deposit(amount);
+        painUsdcCrypt.deposit(amount, address(this));
         emit Invested(amount);
     }
 
     function withdrawfromVault() internal nonReentrant whenNotPaused {
         if (previewRedeemOfContract() < data[1]) revert insufficientShares();
-        uint256 minAmount = data[1];
-        uint256 amount = (minAmount * 101) / 100;
+        uint256 amount = data[1];
         data[1] = 0;
-        venusUSDCxMONEYPool.withdraw(amount, minAmount);
-        emit Withdrawn(minAmount);
+        painUsdcCrypt.withdraw(amount, address(this), address(this));
+        emit Withdrawn(amount);
     }
 
     function previewRedeemOfContract() internal view virtual returns (uint256) {
-        uint256 balance = venusUSDCxMONEYPool.balanceOf(address(this));
-        return venusUSDCxMONEYPool.previewRedeem(balance);
+        uint256 balance = painUsdcCrypt.balanceOf(address(this));
+        return painUsdcCrypt.previewRedeem(balance);
     }
 
     function assetAllowance() external onlyAdmin {
