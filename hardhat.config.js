@@ -23,8 +23,4 @@ module.exports = {
       url: "http://127.0.0.1:8545/",
     },
   },
-
-  paths: {
-    sources: "./contracts/VP_USDT_Polygon-BSC",
-  },
 };
