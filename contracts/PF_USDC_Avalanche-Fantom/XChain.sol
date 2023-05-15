@@ -56,14 +56,13 @@ contract XChain is
     address internal maintainer;
     mapping(address => uint256) public withdrawalRequests;
 
-    //check if endpoint is correct
     constructor()
         SERC20(
             "NucleusPainUSDC-Avalanche/Fantom",
             "nPainUSDC-AVAX/FTM",
             asset.decimals()
         )
-        NonblockingLzApp(0xb6319cC6c8c27A8F5dAF0dD3DF91EA35C4720dd7)
+        NonblockingLzApp(0x3c2269811836af69497E5F486A85D7316753cf62)
     {
         devWallet = msg.sender;
         maintainer = msg.sender;

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: None
-// PF_USDC_Polygon-Fantom
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -64,9 +63,9 @@ contract YChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     address internal immutable swapAdd =
         0x25aB3Efd52e6470681CE037cD546Dc60726948D3;
     address internal maintainer;
-    address internal vault;
+    address internal vault = 0xd55C59Da5872DE866e39b1e3Af2065330ea8Acd6;
 
-    constructor() NonblockingLzApp(0x3c2269811836af69497E5F486A85D7316753cf62) {
+    constructor() NonblockingLzApp(0xb6319cC6c8c27A8F5dAF0dD3DF91EA35C4720dd7) {
         maintainer = msg.sender;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(MAINTAINER_ROLE, msg.sender);
