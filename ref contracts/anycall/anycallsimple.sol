@@ -106,8 +106,8 @@ contract Anycalltest {
     function anyExecute(
         bytes memory _data
     ) external returns (bool success, bytes memory result) {
-        string memory _msg = abi.decode(_data, (string));
-        emit NewMsg(_msg);
+        test = abi.decode(_data, (string));
+        emit NewMsg(test);
         success = true;
         result = "";
     }
