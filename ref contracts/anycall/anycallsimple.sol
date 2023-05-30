@@ -18,11 +18,21 @@ interface CallProxy {
     function executor() external view returns (address executor);
 }
 
-contract Anycalltestboth {
+interface AnycallConfig {
+    function calcSrcFees(
+        address _app,
+        uint256 _toChainID,
+        uint256 _dataLength
+    ) external view returns (uint256);
+}
+
+contract Anycalltest {
     event NewMsg(string msg);
 
     // The FTM testnet anycall contract
     address public anycallcontract;
+
+    address public anycallconfig;
 
     address public owneraddress;
 
@@ -36,8 +46,13 @@ contract Anycalltestboth {
 
     fallback() external payable {}
 
-    constructor(address _anycallcontract, uint _destchain) {
+    constructor(
+        address _anycallcontract,
+        address _anycallconfig,
+        uint _destchain
+    ) {
         anycallcontract = _anycallcontract;
+        anycallconfig = _anycallconfig;
         owneraddress = msg.sender;
         destchain = _destchain;
     }
@@ -51,6 +66,19 @@ contract Anycalltestboth {
         address _destcontract
     ) external onlyowner {
         receivercontract = _destcontract;
+    }
+
+    function calcFees(
+        address _app,
+        uint256 _toChainID,
+        uint256 _dataLength
+    ) external view returns (uint256) {
+        return
+            AnycallConfig(anycallconfig).calcSrcFees(
+                _app,
+                _toChainID,
+                _dataLength
+            );
     }
 
     function step1_initiateAnyCallSimple_srcfee(
