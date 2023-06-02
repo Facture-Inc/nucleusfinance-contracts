@@ -149,7 +149,7 @@ contract YChain0VixUSDC is
 
     function previewRedeemOfContract() public view returns (uint256) {
         uint256 balance = vixUsdc.balanceOf(address(this));
-        return (vixUsdc.exchangeRateStored() * balance) ;
+        return (vixUsdc.exchangeRateStored() * balance);
     }
 
     function assetAllowance() external onlyAdmin {
