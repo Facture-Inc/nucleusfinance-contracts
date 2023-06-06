@@ -42,6 +42,7 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     error invalidAddress();
     error invalidAccessControl(address _add);
     error invalidBIPS();
+    error invalidAmount();
 
     /*//////////////////////////////////////////////////////////////
                     HELPER FUNCTIONS AND MODIFIERS
@@ -118,7 +119,7 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         bytes memory payload = abi.encode(data);
         _lzSend(
             destChainId,
-            payload,
+            payload,    
             payable(msg.sender),
             address(0x0),
             bytes(""),
@@ -147,5 +148,10 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
                             USER FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function withdraw() external nonReentrant {}
+    function withdraw(address _token, uint256 _amount) external nonReentrant {
+        if (isInvalidAddress(_token)) revert invalidAddress();
+        if (_amount <= 0) revert invalidAmount();
+        uint256 fees = calculateVaultFees(_amount);
+        IERC20(_token).safeTransfer(msg.sender, _amount - fees);
+    }
 }
