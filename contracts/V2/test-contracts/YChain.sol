@@ -27,7 +27,7 @@ contract YChain is
     ERC20 public immutable asset;
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
     uint16 internal immutable destChainId;
-    uint256[2] public data;
+    uint256 public withdrawalRequests;
     uint256 public totalVaultAssets;
     address internal immutable mesonSwapContract;
     address public maintainer;
@@ -49,7 +49,7 @@ contract YChain is
         _setupRole(MAINTAINER_ROLE, _maintainer);
     }
 
-        /*//////////////////////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////
                     HELPER FUNCTIONS AND MODIFIERS
     //////////////////////////////////////////////////////////////*/
 
@@ -78,7 +78,6 @@ contract YChain is
         return _address == address(this) || _address == address(0);
     }
 
-
     /*//////////////////////////////////////////////////////////////
                             LAYER ZERO
     //////////////////////////////////////////////////////////////*/
@@ -93,7 +92,7 @@ contract YChain is
     }
 
     function estimateFee() external view returns (uint256 nativeFee) {
-        bytes memory payload = abi.encode(data);
+        bytes memory payload = abi.encode(withdrawalRequests);
         (nativeFee, ) = lzEndpoint.estimateFees(
             destChainId,
             address(this),
@@ -105,7 +104,7 @@ contract YChain is
     }
 
     function sendMessage() external payable nonReentrant onlyMaintainer {
-        bytes memory payload = abi.encode(data);
+        bytes memory payload = abi.encode(withdrawalRequests);
         _lzSend(
             destChainId,
             payload,

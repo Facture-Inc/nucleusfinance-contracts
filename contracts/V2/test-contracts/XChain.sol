@@ -22,7 +22,8 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     uint256 internal feesCollected;
     address public maintainer;
     uint16 internal destChainId;
-    uint256 public data;
+    uint256 public withdrawalRequests;
+
 
     constructor(
         address _lzEndpoint,
@@ -104,7 +105,7 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     }
 
     function estimateFee() external view returns (uint256 nativeFee) {
-        bytes memory payload = abi.encode(data);
+        bytes memory payload = abi.encode(withdrawalRequests);
         (nativeFee, ) = lzEndpoint.estimateFees(
             destChainId,
             address(this),
@@ -116,7 +117,7 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     }
 
     function sendMessage() external payable nonReentrant onlyMaintainer {
-        bytes memory payload = abi.encode(data);
+        bytes memory payload = abi.encode(withdrawalRequests);
         _lzSend(
             destChainId,
             payload,    
@@ -133,15 +134,7 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         uint64,
         bytes memory _payload
     ) internal override {
-        // update mapping of money to be redeemed
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                                MESON
-    //////////////////////////////////////////////////////////////*/
-
-    function isAuthorized(address _addr) external view returns (bool) {
-        return maintainer == _addr;
+        // withdrawalRequests = abi.decode(_payload, (uint256[]));
     }
 
     /*//////////////////////////////////////////////////////////////
