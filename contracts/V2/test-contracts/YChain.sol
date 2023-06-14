@@ -14,7 +14,7 @@ import "../imports/LazerZero/lzApp/NonblockingLzApp.sol";
                     INTERFACE FOR VAULT AND TOKEN
 //////////////////////////////////////////////////////////////*/
 interface testVault {
-//interface for the vault goes here
+    //interface for the vault goes here
 }
 
 interface testToken {
@@ -46,6 +46,7 @@ contract YChain is
     uint256 internal totalVaultAssets;
     uint256 internal amountToInvest;
     address internal immutable mesonSwapContract;
+    address internal immutable lifiSwapContract;
     address public maintainer;
 
     constructor(
@@ -55,6 +56,7 @@ contract YChain is
         address _lzEndpoint,
         uint16 _dstChainId,
         address _mesonSwapContract,
+        address _lifiSwapContract,
         string memory _name,
         string memory _symbol
     ) SERC20(_name, _symbol, _asset.decimals()) NonblockingLzApp(_lzEndpoint) {
@@ -64,6 +66,7 @@ contract YChain is
         maintainer = _maintainer;
         destChainId = _dstChainId;
         mesonSwapContract = _mesonSwapContract;
+        lifiSwapContract = _lifiSwapContract;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(MAINTAINER_ROLE, _maintainer);
     }
@@ -175,7 +178,7 @@ contract YChain is
     }
 
     /*//////////////////////////////////////////////////////////////
-                            USER FUNCTIONS
+                            INVESTMENT/WITHDRAW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
     function deposit(
@@ -186,5 +189,23 @@ contract YChain is
         asset.transferFrom(msg.sender, address(this), assets);
         amountToInvest += assets;
         _mint(receiver, shares);
+    }
+
+    function invest() internal nonReentrant whenNotPaused {
+        // logic to invest in the vault
+    }
+
+    function withdrawfromVault() internal nonReentrant whenNotPaused {
+        // logic to withdraw from the vault
+    }
+
+    function previewRedeemOfContract() internal view virtual returns (uint256) {
+        // preview the amount of assets that can be redeemed from the vault
+    }
+
+    function assetAllowance() external onlyAdmin {
+        assetToken.approve(address(assetVault), 2 ** 256 - 1);
+        assetToken.approve(mesonSwapContract, 2 ** 256 - 1);
+        assetToken.approve(lifiSwapContract, 2 ** 256 - 1);
     }
 }
