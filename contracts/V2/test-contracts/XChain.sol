@@ -24,7 +24,6 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     uint16 internal destChainId;
     uint256 public withdrawalRequests;
 
-
     constructor(
         address _lzEndpoint,
         uint16 _dstChainId,
@@ -92,7 +91,7 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
     }
 
     /*//////////////////////////////////////////////////////////////
-                            LAYER ZERO
+                            LAYER ZERO  
     //////////////////////////////////////////////////////////////*/
 
     function trustAddress(
@@ -120,7 +119,7 @@ contract XChain is NonblockingLzApp, AccessControl, Pausable, ReentrancyGuard {
         bytes memory payload = abi.encode(withdrawalRequests);
         _lzSend(
             destChainId,
-            payload,    
+            payload,
             payable(msg.sender),
             address(0x0),
             bytes(""),
