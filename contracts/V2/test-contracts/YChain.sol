@@ -189,6 +189,7 @@ contract YChain is
         asset.transferFrom(msg.sender, address(this), assets);
         amountToInvest += assets;
         _mint(receiver, shares);
+        invest(); // called by lifi/meson cross chain function call to invest directly
     }
 
     function invest() internal nonReentrant whenNotPaused {
