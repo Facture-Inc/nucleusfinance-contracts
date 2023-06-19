@@ -8,6 +8,7 @@
     "mocha": "^10.2.0"
   },
   "dependencies": {
+    "@axelar-network/axelar-gmp-sdk-solidity": "^3.3.0",
     "@chainlink/contracts": "^0.6.1",
     "@nomiclabs/hardhat-ethers": "^2.2.2",
     "@openzeppelin/contracts": "^4.8.2",
